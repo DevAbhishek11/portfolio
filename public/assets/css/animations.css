@@ -1,0 +1,211 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCROLL & ENTRY ANIMATIONS — GSAP / IntersectionObserver driven
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Base hidden states (GSAP will override) ─────────────────────────────── */
+[data-anime="fade-up"] {
+  opacity: 0;
+  transform: translateY(60px);
+}
+[data-anime="fade-down"] {
+  opacity: 0;
+  transform: translateY(-60px);
+}
+[data-anime="fade-left"] {
+  opacity: 0;
+  transform: translateX(-60px);
+}
+[data-anime="fade-right"] {
+  opacity: 0;
+  transform: translateX(60px);
+}
+[data-anime="scale-up"] {
+  opacity: 0;
+  transform: scale(0.85);
+}
+[data-anime="scale-in"] {
+  opacity: 0;
+  transform: scale(1.1);
+}
+[data-anime="rotate-in"] {
+  opacity: 0;
+  transform: rotate(-8deg) scale(0.9);
+}
+[data-anime="flip-x"] {
+  opacity: 0;
+  transform: rotateX(90deg);
+}
+[data-anime="clip-left"] {
+  clip-path: inset(0 100% 0 0);
+}
+[data-anime="clip-right"] {
+  clip-path: inset(0 0 0 100%);
+}
+[data-anime="clip-bottom"] {
+  clip-path: inset(100% 0 0 0);
+}
+[data-anime="blur-in"] {
+  opacity: 0;
+  filter: blur(12px);
+}
+
+/* Stagger delay CSS helpers */
+[data-delay="100"] {
+  transition-delay: 0.1s !important;
+}
+[data-delay="200"] {
+  transition-delay: 0.2s !important;
+}
+[data-delay="300"] {
+  transition-delay: 0.3s !important;
+}
+[data-delay="400"] {
+  transition-delay: 0.4s !important;
+}
+[data-delay="500"] {
+  transition-delay: 0.5s !important;
+}
+
+/* ── Split text characters ───────────────────────────────────────────────── */
+.split-char {
+  display: inline-block;
+  overflow: hidden;
+}
+.split-char-inner {
+  display: inline-block;
+  transform: translateY(110%);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.split-char.in-view .split-char-inner {
+  transform: translateY(0);
+}
+
+/* ── Counter animation ───────────────────────────────────────────────────── */
+.counter-num {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Progress bar fill ───────────────────────────────────────────────────── */
+.skill-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--gradient);
+  width: 0%;
+  transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.skill-fill.animated {
+  width: var(--target-width);
+}
+
+/* ── Stagger grid children ───────────────────────────────────────────────── */
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+.stagger-children.in-view > *:nth-child(1) {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0s;
+}
+.stagger-children.in-view > *:nth-child(2) {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.08s;
+}
+.stagger-children.in-view > *:nth-child(3) {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.16s;
+}
+.stagger-children.in-view > *:nth-child(4) {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.24s;
+}
+.stagger-children.in-view > *:nth-child(5) {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.32s;
+}
+.stagger-children.in-view > *:nth-child(6) {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.4s;
+}
+.stagger-children.in-view > *:nth-child(7) {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.48s;
+}
+.stagger-children.in-view > *:nth-child(8) {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.56s;
+}
+
+/* ── Parallax elements (Locomotive driven) ───────────────────────────────── */
+[data-parallax] {
+  will-change: transform;
+}
+
+/* ── Horizontal scroll section ───────────────────────────────────────────── */
+.h-scroll-track {
+  display: flex;
+  gap: 2rem;
+  will-change: transform;
+}
+
+/* ── Typewriter cursor ───────────────────────────────────────────────────── */
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--accent-1);
+  margin-left: 3px;
+  vertical-align: text-bottom;
+  animation: blink-cursor 0.8s step-end infinite;
+}
+@keyframes blink-cursor {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ── Page transition overlay ─────────────────────────────────────────────── */
+#page-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  pointer-events: none;
+  display: flex;
+}
+.pt-panel {
+  flex: 1;
+  background: var(--bg-secondary);
+  transform: scaleY(0);
+  transform-origin: bottom;
+}
+
+/* ── Reveal line (GSAP clip-path) ────────────────────────────────────────── */
+.reveal-line {
+  overflow: hidden;
+  display: block;
+}
+.reveal-line-inner {
+  display: block;
+  transform: translateY(100%);
+}
+
+/* ── Magnetic button ─────────────────────────────────────────────────────── */
+.magnetic {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}

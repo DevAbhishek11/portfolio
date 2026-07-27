@@ -1,0 +1,4 @@
+# Add this cron job on your server:
+# crontab -e
+
+* * * * * cd /path/to/your/portfolio && php artisan schedule:run >> /dev/null 2>&1
