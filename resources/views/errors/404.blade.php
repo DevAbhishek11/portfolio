@@ -21,6 +21,12 @@
                 <a href="{{ route('home') }}" class="btn-anime">← Back to Home</a>
                 <a href="{{ route('projects.index') }}" class="btn-outline">View Projects</a>
             </div>
+            <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-top:2rem;">
+                @foreach ([['blogs.index', 'Blog'], ['services', 'Services'], ['contact', 'Contact']] as [$r, $l])
+                    <a href="{{ route($r) }}"
+                        style="color:var(--text-secondary);text-decoration:none;font-size:0.85rem;">{{ $l }}</a>
+                @endforeach
+            </div>
             <p style="color:rgba(139,92,246,0.25);font-size:0.75rem;margin-top:3rem;letter-spacing:0.15em;">ページが見つかりません</p>
         </div>
     </div>

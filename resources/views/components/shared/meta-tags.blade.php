@@ -7,7 +7,7 @@
     'canonical' => null,
 ])
 
-<title>{{ $title === config('portfolio.site_name') ? $title : $title . ' — ' . config('portfolio.site_name') }}</title>
+<title>{{ str_contains($title, config('portfolio.site_name')) ? $title : $title . ' — ' . config('portfolio.site_name') }}</title>
 <meta name="description" content="{{ $description }}">
 <meta name="keywords" content="{{ $keywords }}">
 <meta name="robots" content="index, follow">

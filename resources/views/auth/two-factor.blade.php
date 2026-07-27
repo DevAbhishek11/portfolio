@@ -30,7 +30,7 @@
             <div class="alert-error mb-4">{{ session('error') }}</div>
         @endif
 
-        <form method="POST" action="{{ route('admin.two-factor.verify') }}">
+        <form method="POST" action="{{ route('admin.two-factor.verify') }}" id="otp-form">
             @csrf
 
             {{-- OTP digit boxes --}}
@@ -50,6 +50,19 @@
                 Verify Code →
             </button>
         </form>
+
+        <form method="POST" action="{{ route('admin.two-factor.verify') }}" id="recovery-form" class="hidden">
+            @csrf
+            <input type="text" name="code" placeholder="XXXX-XXXX" maxlength="12" autocomplete="off"
+                class="anime-input text-center tracking-[0.2em] uppercase mb-4">
+            <button type="submit" class="anime-btn mb-4">Use Recovery Code →</button>
+        </form>
+
+        <p class="text-center mb-4">
+            <button type="button" id="toggle-recovery" class="anime-link" style="background:none;border:none;cursor:pointer;">
+                Lost access? Use a recovery code
+            </button>
+        </p>
 
         @if ($method === 'email_otp')
             <form method="POST" action="{{ route('admin.two-factor.resend') }}" class="text-center">
@@ -117,5 +130,17 @@
 
         // Focus first input
         inputs[0].focus();
+
+        // Toggle between OTP-box entry and plain-text recovery-code entry
+        const otpForm = document.getElementById('otp-form');
+        const recoveryForm = document.getElementById('recovery-form');
+        const toggleBtn = document.getElementById('toggle-recovery');
+
+        toggleBtn.addEventListener('click', () => {
+            const usingRecovery = recoveryForm.classList.contains('hidden');
+            otpForm.classList.toggle('hidden', usingRecovery);
+            recoveryForm.classList.toggle('hidden', !usingRecovery);
+            toggleBtn.textContent = usingRecovery ? 'Use my 6-digit code instead' : 'Lost access? Use a recovery code';
+        });
     </script>
 @endsection

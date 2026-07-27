@@ -2,6 +2,9 @@
 @section('content')
 
     @php
+        $metaTitle = $project->title . ' — Project Case Study';
+        $metaDesc = $project->short_description;
+        $ogImage = $project->thumbnail;
         $jsonLdType = 'project';
         $jsonLdData = [
             'title' => $project->title,
@@ -10,6 +13,14 @@
             'url' => route('projects.show', $project->slug),
         ];
     @endphp
+
+    <x-shared.json-ld type="breadcrumb" :data="[
+        'items' => [
+            ['name' => 'Home', 'url' => route('home')],
+            ['name' => 'Projects', 'url' => route('projects.index')],
+            ['name' => $project->title, 'url' => route('projects.show', $project->slug)],
+        ],
+    ]" />
 
     <article style="padding-top:5rem;">
         {{-- Hero image --}}
@@ -146,6 +157,10 @@
             @endif
         </div>
     </article>
+
+    @if ($project->video_path)
+        <x-shared.video-widget :videoPath="$project->video_path" :title="$project->title" />
+    @endif
 
     {{-- Lightbox --}}
     <div id="lightbox" onclick="this.style.display='none'"

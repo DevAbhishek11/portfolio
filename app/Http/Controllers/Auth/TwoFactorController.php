@@ -27,18 +27,28 @@ class TwoFactorController extends Controller
 
     public function verify(Request $request)
     {
-        $request->validate(['code' => 'required|string|min:6|max:6']);
+        $request->validate(['code' => 'required|string|max:20']);
 
         $user = User::find(session('admin_user_id'));
         if (! $user) return redirect()->route('admin.login');
 
+        $code     = trim($request->code);
         $verified = false;
 
-        if ($user->two_factor_method === 'email_otp') {
-            $verified = $this->otpService->verify($user, $request->code, 'login');
-        } elseif ($user->two_factor_method === 'auth_app') {
-            $secret   = decrypt($user->two_factor_secret);
-            $verified = $this->tfService->verify($secret, $request->code);
+        if (preg_match('/^\d{6}$/', $code)) {
+            if ($user->two_factor_method === 'email_otp') {
+                $verified = $this->otpService->verify($user, $code, 'login');
+            } elseif ($user->two_factor_method === 'auth_app') {
+                $secret   = decrypt($user->two_factor_secret);
+                $verified = $this->tfService->verify($secret, $code);
+            }
+        }
+
+        // Fall back to a one-time recovery code regardless of the primary
+        // 2FA method, so losing the authenticator device / email access
+        // doesn't lock the account out.
+        if (! $verified) {
+            $verified = $this->tfService->verifyAndConsumeRecoveryCode($user, $code);
         }
 
         if (! $verified) {

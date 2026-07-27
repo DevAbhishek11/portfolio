@@ -52,6 +52,7 @@ class ProjectController extends Controller
             'short_description' => 'required|string|max:255',
             'description'       => 'required|string',
             'thumbnail'         => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'video'             => 'nullable|mimetypes:video/mp4,video/webm,video/quicktime|max:' . config('portfolio.upload.max_video_size_kb'),
             'github_url'        => 'nullable|url',
             'live_url'          => 'nullable|url',
             'category'          => 'required|in:frontend,backend,fullstack',
@@ -66,15 +67,20 @@ class ProjectController extends Controller
             'tech_icons.*'      => 'nullable|string|max:255',
         ]);
 
-        $data['slug']        = $data['slug'] ?: Str::slug($data['title']);
+        $data['slug']        = ($data['slug'] ?? null) ?: Str::slug($data['title']);
         $data['user_id']     = session('admin_user_id');
         $data['is_featured'] = $request->boolean('is_featured');
 
         // 🔥 Remove fields that don't exist in projects table
-        unset($data['tech_names'], $data['tech_categories'], $data['tech_icons'], $data['images']);
+        unset($data['tech_names'], $data['tech_categories'], $data['tech_icons'], $data['images'], $data['video']);
 
         // Upload Thumbnail
         $data['thumbnail'] = $this->imageService->upload($request->file('thumbnail'), 'projects');
+
+        // Upload demo video, if provided
+        if ($request->hasFile('video')) {
+            $data['video_path'] = $this->imageService->upload($request->file('video'), 'projects/videos');
+        }
 
         // Create Project
         $project = Project::create($data);
@@ -122,6 +128,8 @@ class ProjectController extends Controller
             'short_description' => 'required|string|max:255',
             'description'       => 'required|string',
             'thumbnail'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'video'             => 'nullable|mimetypes:video/mp4,video/webm,video/quicktime|max:' . config('portfolio.upload.max_video_size_kb'),
+            'remove_video'      => 'nullable|boolean',
             'github_url'        => 'nullable|url',
             'live_url'          => 'nullable|url',
             'category'          => 'required|in:frontend,backend,fullstack',
@@ -136,7 +144,7 @@ class ProjectController extends Controller
             'tech_icons.*'      => 'nullable|string|max:255',
         ]);
 
-        $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
+        $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['title']);
         $data['is_featured'] = $request->boolean('is_featured');
 
         // === Remove fields that are NOT in $fillable ===
@@ -144,7 +152,9 @@ class ProjectController extends Controller
             $data['tech_names'],
             $data['tech_categories'],
             $data['tech_icons'],
-            $data['images']           // safety
+            $data['images'],          // safety
+            $data['video'],
+            $data['remove_video'],
         );
 
         // Handle Thumbnail
@@ -156,6 +166,17 @@ class ProjectController extends Controller
             $data['thumbnail'] = $this->imageService->upload($request->file('thumbnail'), 'projects');
         } else {
             unset($data['thumbnail']);
+        }
+
+        // Handle demo video: replace, remove, or leave as-is
+        if ($request->hasFile('video')) {
+            if ($project->video_path) {
+                $this->imageService->delete($project->video_path);
+            }
+            $data['video_path'] = $this->imageService->upload($request->file('video'), 'projects/videos');
+        } elseif ($request->boolean('remove_video') && $project->video_path) {
+            $this->imageService->delete($project->video_path);
+            $data['video_path'] = null;
         }
 
         $project->update($data);
@@ -187,6 +208,7 @@ class ProjectController extends Controller
         $project = Project::with('images')->findOrFail($id);
 
         $this->imageService->delete($project->thumbnail);
+        $this->imageService->delete($project->video_path);
         foreach ($project->images as $img) {
             $this->imageService->delete($img->image_path);
         }

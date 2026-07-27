@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Setting;
 use App\Models\User;
 
 class AboutController extends Controller
@@ -18,12 +19,9 @@ class AboutController extends Controller
 
         $grouped = $skills->groupBy('category');
 
-        $timeline = [
-            ['year' => '2024', 'title' => 'Senior Full Stack Developer', 'place' => 'Freelance / Remote',        'desc' => 'Building scalable web applications for clients worldwide using Laravel, React, and modern cloud infrastructure.'],
-            ['year' => '2022', 'title' => 'Full Stack Developer',        'place' => 'Tech Startup',               'desc' => 'Led frontend architecture migration from jQuery to React, improving performance by 60%.'],
-            ['year' => '2020', 'title' => 'Junior Web Developer',        'place' => 'Digital Agency',             'desc' => 'Developed and maintained client websites using PHP/Laravel and vanilla JavaScript.'],
-            ['year' => '2019', 'title' => 'B.Sc. Computer Science',      'place' => 'University of Technology',   'desc' => 'Graduated with honours. Thesis on real-time collaborative systems using WebSockets.'],
-        ];
+        // Admin-managed via Settings — no career history is invented here;
+        // the section simply doesn't render until real entries are added.
+        $timeline = json_decode(Setting::get('timeline', '[]'), true) ?: [];
 
         return view('frontend.about', compact('admin', 'skills', 'grouped', 'timeline'));
     }

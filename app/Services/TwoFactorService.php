@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * TOTP implementation per RFC 6238 (HMAC-SHA1 based).
@@ -105,6 +106,62 @@ class TwoFactorService
         }
 
         return $result;
+    }
+
+    // ── Recovery codes (single-use fallback if the device is lost) ──────────
+
+    /**
+     * Generates a fresh batch of plain-text recovery codes. Callers must
+     * hash them via hashRecoveryCodes() before persisting and show the
+     * plain codes to the user exactly once.
+     */
+    public function generateRecoveryCodes(int $count = 8): array
+    {
+        $codes = [];
+
+        for ($i = 0; $i < $count; $i++) {
+            $codes[] = strtoupper(substr(bin2hex(random_bytes(4)), 0, 4) . '-' . substr(bin2hex(random_bytes(4)), 0, 4));
+        }
+
+        return $codes;
+    }
+
+    public function hashRecoveryCodes(array $codes): array
+    {
+        return array_values(array_map(
+            fn (string $code) => Hash::make($this->normalizeRecoveryCode($code)),
+            $codes
+        ));
+    }
+
+    /**
+     * Checks the given input against the user's stored recovery-code hashes.
+     * On match, consumes (removes) that code so it can't be reused.
+     */
+    public function verifyAndConsumeRecoveryCode(User $user, string $code): bool
+    {
+        $hashes = $user->two_factor_recovery_codes ?? [];
+
+        if (empty($hashes)) {
+            return false;
+        }
+
+        $normalized = $this->normalizeRecoveryCode($code);
+
+        foreach ($hashes as $index => $hash) {
+            if (Hash::check($normalized, $hash)) {
+                unset($hashes[$index]);
+                $user->update(['two_factor_recovery_codes' => array_values($hashes)]);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function normalizeRecoveryCode(string $code): string
+    {
+        return strtoupper(preg_replace('/[^A-Z0-9]/i', '', $code) ?? '');
     }
 
     // ── QR Code SVG (server-rendered, no external lib) ───────────────────────

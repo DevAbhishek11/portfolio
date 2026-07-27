@@ -1,6 +1,11 @@
 @extends('layouts.app')
 @section('content')
 
+    @php
+        $metaTitle = 'Portfolio Projects — Laravel & React Web Applications';
+        $metaDesc = 'Browse a portfolio of full-stack web applications built with Laravel, React, Node.js, and modern web technologies.';
+    @endphp
+
     <section style="padding:8rem 0 4rem;">
         <div class="container">
             <div style="text-align:center;margin-bottom:3rem;">
@@ -90,6 +95,10 @@
                         wrapper.innerHTML = json.html + (json.pagination || '');
                         if (push) history.pushState(state, '', buildUrl());
                         wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        // Content height changed — keep ScrollTrigger's cached
+                        // trigger positions (and therefore the footer/layout)
+                        // in sync with the new DOM height.
+                        if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
                     } catch (e) {
                         console.error('Projects AJAX failed', e);
                     } finally {

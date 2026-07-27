@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" class="dark" id="html-root">
 
 <head>
@@ -19,601 +19,13 @@
 
     <x-shared.json-ld type="{{ $jsonLdType ?? 'website' }}" :data="$jsonLdData ?? []" />
 
-    {{-- Tailwind --}}
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        display: ['"Playfair Display"', 'serif'],
-                        body: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        'anime-purple': '#8b5cf6',
-                        'anime-cyan': '#06b6d4',
-                        'anime-pink': '#f43f5e',
-                        'anime-dark': '#0a0a0f',
-                    },
-                }
-            }
-        }
-    </script>
-
     {{-- Google Fonts --}}
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <link rel="stylesheet" href="{{ asset('assets/css/anime-theme.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/animations.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
-
-    <style>
-        :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-tertiary: #1a1a2e;
-            --bg-glass: rgba(26, 26, 46, 0.7);
-            --text-primary: #e4e4e7;
-            --text-secondary: #a1a1aa;
-            --text-accent: #c084fc;
-            --accent-1: #8b5cf6;
-            --accent-2: #06b6d4;
-            --accent-3: #f43f5e;
-            --border-color: rgba(139, 92, 246, 0.2);
-            --shadow-anime: 0 0 30px rgba(139, 92, 246, 0.15);
-            --gradient: linear-gradient(135deg, #8b5cf6, #06b6d4, #f43f5e);
-        }
-
-        .light {
-            --bg-primary: #faf5ff;
-            --bg-secondary: #f3e8ff;
-            --bg-tertiary: #ffffff;
-            --text-primary: #1e1b4b;
-            --text-secondary: #6366f1;
-            --accent-1: #7c3aed;
-            --accent-2: #0891b2;
-            --accent-3: #e11d48;
-            --border-color: rgba(124, 58, 237, 0.2);
-        }
-
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            line-height: 1.7;
-            overflow-x: hidden;
-        }
-
-        body.loco-ready {
-            overflow: hidden;
-        }
-
-        body.menu-open {
-            overflow: hidden;
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-primary);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent-1);
-            border-radius: 3px;
-        }
-
-        /* Typography */
-        .font-display {
-            font-family: 'Playfair Display', serif;
-        }
-
-        h1,
-        h2,
-        h3 {
-            font-family: 'Playfair Display', serif;
-        }
-
-        /* Gradient text */
-        .grad-text {
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* Glass card */
-        .glass {
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: 1.25rem;
-        }
-
-        /* Anime card */
-        .anime-card {
-            background: var(--bg-tertiary);
-            border: 2px solid var(--border-color);
-            border-radius: 1rem;
-            position: relative;
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-
-        .anime-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: var(--gradient);
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 0;
-            border-radius: inherit;
-            pointer-events: none;
-        }
-
-        .anime-card:hover {
-            border-color: var(--accent-1);
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-anime);
-        }
-
-        .anime-card:hover::before {
-            opacity: 0.04;
-        }
-
-        /* Section padding */
-        .section-pad {
-            padding: 6rem 0;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-
-        /* Buttons */
-        .btn-anime {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.875rem 2rem;
-            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-            color: white;
-            border: none;
-            border-radius: 0.75rem;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-anime:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4);
-        }
-
-        .btn-outline {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.875rem 2rem;
-            background: transparent;
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 0.75rem;
-            font-weight: 500;
-            font-size: 0.95rem;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        .btn-outline:hover {
-            border-color: var(--accent-1);
-            color: var(--accent-1);
-        }
-
-        /* Badge */
-        .tech-badge {
-            display: inline-block;
-            padding: 3px 12px;
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid rgba(139, 92, 246, 0.2);
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--text-accent);
-        }
-
-        .badge-frontend {
-            background: rgba(6, 182, 212, 0.1);
-            border-color: rgba(6, 182, 212, 0.25);
-            color: #22d3ee;
-        }
-
-        .badge-backend {
-            background: rgba(139, 92, 246, 0.1);
-            border-color: rgba(139, 92, 246, 0.25);
-            color: #a78bfa;
-        }
-
-        .badge-fullstack {
-            background: rgba(244, 63, 94, 0.1);
-            border-color: rgba(244, 63, 94, 0.25);
-            color: #fb7185;
-        }
-
-        /* Section header */
-        .section-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--accent-1);
-            margin-bottom: 1rem;
-        }
-
-        .section-tag::before,
-        .section-tag::after {
-            content: '';
-            display: inline-block;
-            width: 24px;
-            height: 1px;
-            background: var(--accent-1);
-            opacity: 0.5;
-        }
-
-        /* Navbar */
-        #navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            padding: 1.25rem 0;
-            transition: all 0.4s ease;
-        }
-
-        #navbar.scrolled {
-            background: rgba(10, 10, 15, 0.92);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-            padding: 0.75rem 0;
-        }
-
-        .navbar-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .desktop-nav {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        .navbar-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .mobile-menu-toggle {
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .nav-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: color 0.2s;
-            position: relative;
-            padding-bottom: 4px;
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: var(--accent-1);
-            transition: width 0.3s ease;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            color: var(--text-primary);
-        }
-
-        .nav-link:hover::after,
-        .nav-link.active::after {
-            width: 100%;
-        }
-
-        /* Anime form inputs */
-        .anime-input {
-            width: 100%;
-            background: rgba(10, 10, 15, 0.6);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            border-radius: 0.75rem;
-            padding: 0.875rem 1.125rem;
-            font-size: 0.9rem;
-            font-family: 'Inter', sans-serif;
-            outline: none;
-            transition: all 0.3s;
-        }
-
-        .anime-input:focus {
-            border-color: var(--accent-1);
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
-        }
-
-        .anime-input::placeholder {
-            color: rgba(161, 161, 170, 0.5);
-        }
-
-        .input-error {
-            border-color: var(--accent-3) !important;
-        }
-
-        .error-msg {
-            color: #fb7185;
-            font-size: 0.8rem;
-            margin-top: 0.3rem;
-        }
-
-        /* Glow orb */
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Grid pattern */
-        .grid-bg {
-            background-image:
-                linear-gradient(rgba(139, 92, 246, 0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(139, 92, 246, 0.04) 1px, transparent 1px);
-            background-size: 50px 50px;
-        }
-
-        /* Anime halftone dots */
-        .halftone {
-            background-image: radial-gradient(circle, rgba(139, 92, 246, 0.15) 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-
-        /* Scroll reveal */
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.7s ease, transform 0.7s ease;
-        }
-
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .reveal-left {
-            opacity: 0;
-            transform: translateX(-40px);
-            transition: opacity 0.7s ease, transform 0.7s ease;
-        }
-
-        .reveal-right {
-            opacity: 0;
-            transform: translateX(40px);
-            transition: opacity 0.7s ease, transform 0.7s ease;
-        }
-
-        .reveal-left.visible,
-        .reveal-right.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /* Stagger delay helpers */
-        .delay-1 {
-            transition-delay: 0.1s;
-        }
-
-        .delay-2 {
-            transition-delay: 0.2s;
-        }
-
-        .delay-3 {
-            transition-delay: 0.3s;
-        }
-
-        .delay-4 {
-            transition-delay: 0.4s;
-        }
-
-        .delay-5 {
-            transition-delay: 0.5s;
-        }
-
-        /* Mobile menu */
-        #mobile-menu {
-            position: fixed;
-            inset: 0;
-            z-index: 1100;
-            background: rgba(10, 10, 15, 0.97);
-            backdrop-filter: blur(20px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transform: translateX(100%);
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: transform 0.4s ease, opacity 0.4s ease, visibility 0.4s ease;
-        }
-
-        #mobile-menu.open {
-            transform: translateX(0);
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        /* Preloader */
-        #preloader {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background: var(--bg-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 1.5rem;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
-        }
-
-        #preloader.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .loader-bar {
-            width: 200px;
-            height: 2px;
-            background: rgba(139, 92, 246, 0.2);
-            border-radius: 9999px;
-            overflow: hidden;
-        }
-
-        .loader-fill {
-            height: 100%;
-            background: var(--gradient);
-            border-radius: 9999px;
-            width: 0%;
-            transition: width 0.1s linear;
-        }
-
-        /* Anime speed lines */
-        .speed-lines::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: repeating-linear-gradient(90deg,
-                    transparent,
-                    transparent 4px,
-                    rgba(139, 92, 246, 0.03) 4px,
-                    rgba(139, 92, 246, 0.03) 5px);
-            pointer-events: none;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border-color);
-        }
-
-        /* Reading progress bar */
-        #read-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 2px;
-            background: var(--gradient);
-            z-index: 9998;
-            width: 0%;
-            transition: width 0.1s linear;
-        }
-
-        /* Social icon */
-        .social-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 0.5rem;
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .social-icon:hover {
-            background: rgba(139, 92, 246, 0.2);
-            color: var(--accent-1);
-            border-color: var(--accent-1);
-        }
-
-        /* Responsive */
-        @media (max-width: 767px) {
-            .section-pad {
-                padding: 4rem 0;
-            }
-
-            .container {
-                padding: 0 1rem;
-            }
-
-            h1.hero-title {
-                font-size: clamp(2.5rem, 8vw, 4rem) !important;
-            }
-
-            .desktop-nav {
-                display: none !important;
-            }
-
-            .mobile-menu-toggle {
-                display: inline-flex !important;
-            }
-        }
-
-        @media (min-width: 768px) {
-            #mobile-menu {
-                display: none !important;
-            }
-        }
-    </style>
 
     @stack('styles')
 </head>
@@ -707,7 +119,7 @@
     <x-shared.flash-message />
 
     {{-- Main content --}}
-    <div data-scroll-container id="scroll-container">
+    <div>
         <x-shared.skip-link />
 
         <main>
@@ -715,7 +127,7 @@
         </main>
 
         {{-- Footer --}}
-        <footer>
+        <footer id="site-footer">
             <div class="container" style="padding-top:3rem;padding-bottom:3rem;">
                 <div
                     style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem;margin-bottom:3rem;">
@@ -742,6 +154,11 @@
                             @if (config('portfolio.social.twitter'))
                                 <a href="{{ config('portfolio.social.twitter') }}" target="_blank"
                                     class="social-icon">X</a>
+                            @endif
+
+                            @if (portfolio_owner()?->upwork_url)
+                                <a href="{{ portfolio_owner()->upwork_url }}" target="_blank" rel="noopener"
+                                    class="social-icon" title="Hire me on Upwork">Up</a>
                             @endif
                         </div>
                     </div>
@@ -801,30 +218,24 @@
     <canvas id="sparkle-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:1;"></canvas>
     <canvas id="sakura-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:2;"></canvas>
 
+    {{-- Floating AI chat widget --}}
+    <x-shared.chat-widget />
+
     {{-- CDN Scripts --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.0/dist/cdn.min.js" defer></script>
-
-    {{-- 3D System --}}
-    <script src="{{ asset('assets/js/three-scene.js') }}"></script>
-    <script src="{{ asset('assets/js/anime-character.js') }}"></script>
-    <script src="{{ asset('assets/js/floating-objects.js') }}"></script>
-    <script src="{{ asset('assets/js/scene-environment.js') }}"></script>
-    <script src="{{ asset('assets/js/section-scenes.js') }}"></script>
-    <script src="{{ asset('assets/js/scene-quality.js') }}"></script>
-    <script src="{{ asset('assets/js/three-boot.js') }}"></script>
 
     {{-- Site JS --}}
     <script src="{{ asset('assets/js/preloader.js') }}"></script>
     <script src="{{ asset('assets/js/cursor.js') }}"></script>
-    <script src="{{ asset('assets/js/locomotive-init.js') }}"></script>
     <script src="{{ asset('assets/js/scroll-animations.js') }}"></script>
     <script src="{{ asset('assets/js/mouse-interactions.js') }}"></script>
     <script src="{{ asset('assets/js/particle-system.js') }}"></script>
+    <script src="{{ asset('assets/js/floating-widgets.js') }}"></script>
+    <script src="{{ asset('assets/js/chat-widget.js') }}"></script>
+    <script src="{{ asset('assets/js/video-widget.js') }}"></script>
     <script src="{{ asset('assets/js/app.js') }}"></script>
 
     <script>

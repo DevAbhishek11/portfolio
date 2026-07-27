@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'two-factor.verified' => \App\Http\Middleware\TwoFactorVerified::class,
             'track.pageview'     => \App\Http\Middleware\TrackPageView::class,
             'rate.limit' => \App\Http\Middleware\RateLimiter::class,
+            'remember.me'        => \App\Http\Middleware\RememberMe::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

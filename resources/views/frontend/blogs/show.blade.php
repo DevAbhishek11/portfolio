@@ -2,6 +2,11 @@
 @section('content')
 
     @php
+        $metaTitle = $blog->meta_title ?: $blog->title;
+        $metaDesc = $blog->meta_description ?: $blog->excerpt;
+        if ($blog->featured_image) {
+            $ogImage = $blog->featured_image;
+        }
         $jsonLdType = 'article';
         $jsonLdData = [
             'title' => $blog->meta_title ?: $blog->title,
@@ -11,6 +16,14 @@
             'updated_at' => $blog->updated_at->toIso8601String(),
         ];
     @endphp
+
+    <x-shared.json-ld type="breadcrumb" :data="[
+        'items' => [
+            ['name' => 'Home', 'url' => route('home')],
+            ['name' => 'Blog', 'url' => route('blogs.index')],
+            ['name' => $blog->title, 'url' => route('blogs.show', $blog->slug)],
+        ],
+    ]" />
 
     <article style="padding:5rem 0;">
         {{-- Featured image --}}

@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\LoginAttempt;
+use App\Models\RememberToken;
 use App\Models\User;
 use App\Services\MailService;
 use App\Services\OtpService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 
@@ -78,6 +80,10 @@ class LoginController extends Controller
         session()->regenerate();
         session(['admin_user_id' => $user->id]);
 
+        if ($request->boolean('remember')) {
+            $this->rememberUser($user, $request);
+        }
+
         // Update last login
         $user->update([
             'last_login_at' => now(),
@@ -100,6 +106,7 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+        $this->forgetRememberCookie($request);
         session()->flush();
         return redirect()->route('admin.login')->with('success', 'Logged out successfully.');
     }
@@ -113,5 +120,51 @@ class LoginController extends Controller
             ->count();
 
         return $failedCount >= 10;
+    }
+
+    /**
+     * Issue a 30-day "remember me" cookie backed by a hashed token row,
+     * independent of the normal session lifetime.
+     */
+    private function rememberUser(User $user, Request $request): void
+    {
+        $rawToken = bin2hex(random_bytes(32));
+
+        RememberToken::create([
+            'user_id'    => $user->id,
+            'token'      => hash('sha256', $rawToken),
+            'expires_at' => now()->addDays(30),
+        ]);
+
+        Cookie::queue(Cookie::make(
+            'admin_remember',
+            $user->id . '|' . $rawToken,
+            60 * 24 * 30,
+            null,
+            null,
+            $request->secure(),
+            true,
+            false,
+            'lax'
+        ));
+    }
+
+    private function forgetRememberCookie(Request $request): void
+    {
+        $cookie = $request->cookie('admin_remember');
+
+        if ($cookie && str_contains($cookie, '|')) {
+            [$userId, $rawToken] = explode('|', $cookie, 2);
+
+            RememberToken::where('user_id', $userId)
+                ->get()
+                ->each(function (RememberToken $t) use ($rawToken) {
+                    if (hash_equals($t->token, hash('sha256', $rawToken))) {
+                        $t->delete();
+                    }
+                });
+        }
+
+        Cookie::queue(Cookie::forget('admin_remember'));
     }
 }

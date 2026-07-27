@@ -1,6 +1,11 @@
 @extends('layouts.app')
 @section('content')
 
+    @php
+        $metaTitle = (portfolio_owner()?->name ?? config('portfolio.site_name')) . ' — Laravel & Full-Stack Developer (React, Node.js)';
+        $metaDesc = 'Full-stack developer building scalable web applications with Laravel, React, and Node.js. Explore projects, technical writing, and get in touch for freelance or full-time opportunities.';
+    @endphp
+
     {{-- ── HERO ─────────────────────────────────────────────────────────────────── --}}
     <section class="min-h-screen flex items-center relative overflow-hidden pt-20">
 
@@ -182,6 +187,38 @@
         </div>
     </section>
 
+    {{-- ── WHY WORK WITH ME ─────────────────────────────────────────────────────── --}}
+    <section class="section-pad relative">
+        <div class="container">
+            <div class="text-center mb-16">
+                <div class="section-tag reveal" style="justify-content:center;">Why Work With Me</div>
+                <h2
+                    class="font-display reveal delay-1 text-[clamp(1.8rem,3.5vw,2.8rem)] font-extrabold text-[#1e1b4b] dark:text-[#e4e4e7]">
+                    Built for Developers Who<br class="hidden sm:block"><span class="grad-text">Ship & Support</span>
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                @foreach ([
+                    ['icon' => '🧩', 'title' => 'End-to-End Ownership', 'desc' => 'One developer across the whole stack — database schema, API design, and pixel-level UI — so you get a single point of contact instead of coordinating specialists.'],
+                    ['icon' => '🧹', 'title' => 'Clean, Maintainable Code', 'desc' => 'Consistent conventions, sensible structure, and code written so another developer (or future you) can pick it up without archaeology.'],
+                    ['icon' => '🛠️', 'title' => 'Proven, Modern Stack', 'desc' => 'Laravel, React, Next.js, and Node.js — mature, well-documented technologies with strong long-term support and large hiring pools.'],
+                    ['icon' => '💬', 'title' => 'Clear Communication', 'desc' => 'Realistic estimates, regular progress updates, and honest answers when something needs more time — no disappearing mid-project.'],
+                ] as $i => $item)
+                    <div class="anime-card reveal delay-{{ $i + 1 }} p-6 text-center">
+                        <div class="text-[2rem] mb-3">{{ $item['icon'] }}</div>
+                        <h3 class="text-[#1e1b4b] dark:text-[#e4e4e7] text-[0.95rem] font-bold mb-2">
+                            {{ $item['title'] }}
+                        </h3>
+                        <p class="text-[#6366f1] dark:text-[#a1a1aa] text-[0.82rem] leading-[1.6]">
+                            {{ $item['desc'] }}
+                        </p>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
     {{-- ── LATEST BLOGS ─────────────────────────────────────────────────────────── --}}
     @if ($latestBlogs->count())
         <section class="section-pad">
@@ -234,6 +271,46 @@
             </div>
         </section>
     @endif
+
+    {{-- ── FAQ ───────────────────────────────────────────────────────────────────── --}}
+    @php
+        $faqs = [
+            ['question' => 'What technologies do you specialize in?', 'answer' => 'Laravel and PHP for backend development, paired with React and Next.js on the frontend. I also work with Node.js, TypeScript, and databases including MySQL, PostgreSQL, and MongoDB.'],
+            ['question' => 'Do you handle both frontend and backend work?', 'answer' => "Yes — I work across the full stack, from database design and REST API development to building and styling the user interface."],
+            ['question' => 'Can you work with an existing codebase?', 'answer' => "Yes. I regularly join projects mid-stream — extending an existing Laravel application, refactoring legacy code, or adding features to a codebase I didn't originally build."],
+            ['question' => 'Do you offer support after a project launches?', 'answer' => 'Yes, ongoing maintenance and feature development are available after launch — see the Services page for the full breakdown.'],
+            ['question' => 'How do we get started?', 'answer' => "Use the contact form or the chat widget with a short description of your project, and I'll follow up to discuss scope, timeline, and next steps."],
+        ];
+    @endphp
+
+    <x-shared.json-ld type="faq" :data="['items' => $faqs]" />
+
+    <section class="section-pad relative">
+        <div class="container max-w-[800px]">
+            <div class="text-center mb-14">
+                <div class="section-tag reveal" style="justify-content:center;">FAQ</div>
+                <h2
+                    class="font-display reveal delay-1 text-[clamp(1.8rem,3.5vw,2.8rem)] font-extrabold text-[#1e1b4b] dark:text-[#e4e4e7]">
+                    Common <span class="grad-text">Questions</span>
+                </h2>
+            </div>
+
+            <div class="space-y-4">
+                @foreach ($faqs as $i => $faq)
+                    <details class="anime-card reveal delay-{{ min($i + 1, 5) }} p-5 group">
+                        <summary
+                            class="cursor-pointer list-none flex items-center justify-between gap-4 text-[#1e1b4b] dark:text-[#e4e4e7] font-semibold text-[0.95rem]">
+                            {{ $faq['question'] }}
+                            <span class="text-[#7c3aed] dark:text-[#8b5cf6] shrink-0 transition-transform group-open:rotate-45">+</span>
+                        </summary>
+                        <p class="text-[#6366f1] dark:text-[#a1a1aa] text-[0.88rem] leading-[1.7] mt-3">
+                            {{ $faq['answer'] }}
+                        </p>
+                    </details>
+                @endforeach
+            </div>
+        </div>
+    </section>
 
     {{-- ── CONTACT CTA ──────────────────────────────────────────────────────────── --}}
     <section class="py-20 relative overflow-hidden bg-[#f3e8ff] dark:bg-[#12121a]">

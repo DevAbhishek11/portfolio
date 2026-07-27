@@ -1,5 +1,9 @@
 @extends('layouts.app')
 @section('content')
+    @php
+        $metaTitle = 'Web Development Services — Laravel, React & API Development';
+        $metaDesc = 'Full-stack web development services: Laravel backend development, React/Next.js frontends, REST API design, database architecture, and mobile app development.';
+    @endphp
     <section class="pt-32 pb-16">
         <div class="container">
 

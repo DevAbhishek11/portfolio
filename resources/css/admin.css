@@ -1,0 +1,102 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-admin-bg: #0f0f14;
+    --color-admin-surface: #17171f;
+    --color-admin-card: #1e1e2a;
+    --color-admin-border: #2a2a3a;
+    --color-admin-accent: #8b5cf6;
+    --color-admin-accent-lt: #a78bfa;
+}
+
+@layer base {
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+    }
+}
+
+@layer components {
+
+    /* collapsed sidebar */
+    #sidebar.collapsed {
+        width: 70px !important;
+        min-width: 70px !important;
+    }
+
+    #sidebar.collapsed .nav-label,
+    #sidebar.collapsed .nav-badge,
+    #sidebar.collapsed .brand-text {
+        display: none !important;
+    }
+
+    #sidebar.collapsed .nav-item {
+        justify-content: center !important;
+        padding: 0.75rem !important;
+    }
+
+    /* thin scrollbars */
+    .sidebar-nav::-webkit-scrollbar {
+        width: 3px;
+    }
+
+    .sidebar-nav::-webkit-scrollbar-thumb {
+        background: #2a2a3a;
+        border-radius: 2px;
+    }
+
+    .scroll-zone::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .scroll-zone::-webkit-scrollbar-track {
+        background: #0f0f14;
+    }
+
+    .scroll-zone::-webkit-scrollbar-thumb {
+        background: #2a2a3a;
+        border-radius: 3px;
+    }
+
+    .scroll-zone::-webkit-scrollbar-thumb:hover {
+        background: #3a3a4a;
+    }
+}
+
+@media (max-width: 1024px) {
+    .grid.grid-cols-2.lg\:grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .grid.grid-cols-1.lg\:grid-cols-3 {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 768px) {
+    canvas[id$="Chart"] {
+        max-height: 220px;
+    }
+}
+
+@media (max-width: 640px) {
+    .admin-card {
+        overflow-x: auto;
+    }
+
+    .admin-table {
+        min-width: 600px;
+    }
+}

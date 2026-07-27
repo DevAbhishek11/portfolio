@@ -48,6 +48,7 @@ class ProfileController extends Controller
             'github_url'  => 'nullable|url',
             'linkedin_url' => 'nullable|url',
             'twitter_url' => 'nullable|url',
+            'upwork_url'  => 'nullable|url',
             'avatar'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'resume'      => 'nullable|mimes:pdf|max:10240',
         ]);
@@ -156,7 +157,20 @@ class ProfileController extends Controller
             return back()->with('error', 'Verification failed. Please try again.');
         }
 
+        $wasAlreadyEnabled = $user->two_factor_enabled;
         $user->update(['two_factor_enabled' => true]);
+
+        // Only mint recovery codes the first time 2FA goes active for this
+        // user, not on every re-verify of the same setup form.
+        if (! $wasAlreadyEnabled) {
+            $plainCodes = $this->tfService->generateRecoveryCodes();
+            $user->update(['two_factor_recovery_codes' => $this->tfService->hashRecoveryCodes($plainCodes)]);
+
+            return back()->with([
+                'success'        => 'Two-factor authentication enabled successfully.',
+                'recovery_codes' => $plainCodes,
+            ]);
+        }
 
         return back()->with('success', 'Two-factor authentication enabled successfully.');
     }
@@ -171,10 +185,33 @@ class ProfileController extends Controller
         }
 
         $user->update([
-            'two_factor_enabled' => false,
-            'two_factor_secret'  => null,
+            'two_factor_enabled'        => false,
+            'two_factor_secret'         => null,
+            'two_factor_recovery_codes' => null,
         ]);
 
         return back()->with('success', 'Two-factor authentication disabled.');
+    }
+
+    public function regenerateRecoveryCodes(Request $request)
+    {
+        $request->validate(['password' => 'required|string']);
+        $user = User::findOrFail(session('admin_user_id'));
+
+        if (! Hash::check($request->password, $user->password)) {
+            return back()->withErrors(['password' => 'Incorrect password.']);
+        }
+
+        if (! $user->two_factor_enabled) {
+            return back()->with('error', 'Enable two-factor authentication first.');
+        }
+
+        $plainCodes = $this->tfService->generateRecoveryCodes();
+        $user->update(['two_factor_recovery_codes' => $this->tfService->hashRecoveryCodes($plainCodes)]);
+
+        return back()->with([
+            'success'        => 'Recovery codes regenerated. Your old codes no longer work.',
+            'recovery_codes' => $plainCodes,
+        ]);
     }
 }

@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Blog;
+use App\Models\Project;
+use App\Models\Setting;
+use App\Models\Skill;
 
 class ServiceController extends Controller
 {
@@ -62,12 +66,16 @@ class ServiceController extends Controller
             ['step' => '06', 'title' => 'Support',      'desc' => 'Ongoing maintenance, updates, and feature additions.'],
         ];
 
-        $stats = [
-            ['value' => '50+',  'label' => 'Projects Completed'],
-            ['value' => '30+',  'label' => 'Happy Clients'],
-            ['value' => '5+',   'label' => 'Years Experience'],
-            ['value' => '15+',  'label' => 'Technologies'],
-        ];
+        // Real, derived numbers only — "Years Experience" / "Happy Clients" are
+        // admin-set via Settings and simply omitted until filled in, rather
+        // than shipping invented figures.
+        $stats = array_values(array_filter([
+            ['value' => Project::published()->count() . '+', 'label' => 'Projects Completed'],
+            ['value' => Skill::count() . '+',                'label' => 'Technologies'],
+            ['value' => Blog::published()->count() . '+',    'label' => 'Articles Written'],
+            Setting::get('years_experience') ? ['value' => Setting::get('years_experience') . '+', 'label' => 'Years Experience'] : null,
+            Setting::get('client_count') ? ['value' => Setting::get('client_count') . '+', 'label' => 'Happy Clients'] : null,
+        ]));
 
         return view('frontend.services', compact('services', 'process', 'stats'));
     }

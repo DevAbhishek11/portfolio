@@ -1,5 +1,9 @@
 @extends('layouts.app')
 @section('content')
+    @php
+        $metaTitle = 'About ' . (portfolio_owner()?->name ?? config('portfolio.site_name')) . ' — Laravel, React & Node.js Developer';
+        $metaDesc = 'Background, skills, and experience of a full-stack developer working with Laravel, React, Node.js, and modern cloud infrastructure.';
+    @endphp
     {{-- ── HERO ─────────────────────────────────────────────────────────────────── --}}
     <section class="pt-32 pb-16 relative overflow-hidden">
 
@@ -51,80 +55,83 @@
     </section>
 
     {{-- ── TIMELINE ─────────────────────────────────────────────────────────────── --}}
-    <section class="section-pad bg-[#f3e8ff] dark:bg-[#12121a] relative">
-        <div class="container">
+    @if (count($timeline))
+        <section class="section-pad bg-[#f3e8ff] dark:bg-[#12121a] relative">
+            <div class="container">
 
+                <div class="text-center mb-16">
+                    <div class="section-tag reveal flex justify-center">My Journey</div>
+                    <h2
+                        class="font-display reveal delay-1 text-[clamp(1.8rem,3.5vw,2.8rem)] font-extrabold text-[#1e1b4b] dark:text-[#e4e4e7]">
+                        Experience &amp; Education
+                    </h2>
+                </div>
+
+                <div class="max-w-[700px] mx-auto relative">
+                    {{-- Vertical line --}}
+                    <div class="absolute left-6 top-0 bottom-0 w-px bg-[#7c3aed]/20 dark:bg-[#8b5cf6]/20"></div>
+
+                    @foreach ($timeline as $i => $item)
+                        <div class="reveal delay-{{ $i + 1 }} flex gap-8 mb-10 relative">
+
+                            {{-- Year badge --}}
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-[#7c3aed] to-[#0891b2] dark:from-[#8b5cf6] dark:to-[#06b6d4] flex items-center justify-center shrink-0 text-[0.7rem] font-bold text-white z-[1]">
+                                {{ substr($item['year'], 2) }}
+                            </div>
+
+                            {{-- Card --}}
+                            <div class="anime-card flex-1 p-5">
+                                <div class="flex items-center gap-3 mb-2 flex-wrap">
+                                    <h3 class="text-[#1e1b4b] dark:text-[#e4e4e7] text-base font-bold">
+                                        {{ $item['title'] }}
+                                    </h3>
+                                    <span class="tech-badge">{{ $item['year'] }}</span>
+                                </div>
+                                <p class="text-[#7c3aed] dark:text-[#8b5cf6] text-[0.85rem] font-medium mb-2">
+                                    {{ $item['place'] }}
+                                </p>
+                                <p class="text-[#6366f1] dark:text-[#a1a1aa] text-sm leading-[1.6]">
+                                    {{ $item['desc'] }}
+                                </p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- ── HOW I WORK ───────────────────────────────────────────────────────────── --}}
+    <section class="section-pad relative">
+        <div class="container">
             <div class="text-center mb-16">
-                <div class="section-tag reveal flex justify-center">My Journey</div>
+                <div class="section-tag reveal flex justify-center">How I Work</div>
                 <h2
                     class="font-display reveal delay-1 text-[clamp(1.8rem,3.5vw,2.8rem)] font-extrabold text-[#1e1b4b] dark:text-[#e4e4e7]">
-                    Experience &amp; Education
+                    My <span class="grad-text">Approach</span>
                 </h2>
             </div>
 
-            <div class="max-w-[700px] mx-auto relative">
-                {{-- Vertical line --}}
-                <div class="absolute left-6 top-0 bottom-0 w-px bg-[#7c3aed]/20 dark:bg-[#8b5cf6]/20"></div>
-
-                @foreach ($timeline as $i => $item)
-                    <div class="reveal delay-{{ $i + 1 }} flex gap-8 mb-10 relative">
-
-                        {{-- Year badge --}}
-                        <div
-                            class="w-12 h-12 rounded-full bg-gradient-to-br from-[#7c3aed] to-[#0891b2] dark:from-[#8b5cf6] dark:to-[#06b6d4] flex items-center justify-center shrink-0 text-[0.7rem] font-bold text-white z-[1]">
-                            {{ substr($item['year'], 2) }}
-                        </div>
-
-                        {{-- Card --}}
-                        <div class="anime-card flex-1 p-5">
-                            <div class="flex items-center gap-3 mb-2 flex-wrap">
-                                <h3 class="text-[#1e1b4b] dark:text-[#e4e4e7] text-base font-bold">
-                                    {{ $item['title'] }}
-                                </h3>
-                                <span class="tech-badge">{{ $item['year'] }}</span>
-                            </div>
-                            <p class="text-[#7c3aed] dark:text-[#8b5cf6] text-[0.85rem] font-medium mb-2">
-                                {{ $item['place'] }}
-                            </p>
-                            <p class="text-[#6366f1] dark:text-[#a1a1aa] text-sm leading-[1.6]">
-                                {{ $item['desc'] }}
-                            </p>
-                        </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                @foreach ([
+                    ['title' => 'Understand Before I Build', 'desc' => 'Every project starts with understanding the actual problem, not just the feature request — so what gets built solves the right thing.'],
+                    ['title' => 'Test as I Go', 'desc' => "Edge cases and error states get handled during development, not discovered after launch. Testing isn't an afterthought bolted on at the end."],
+                    ['title' => 'Document the Decisions', 'desc' => 'Code and comments explain the why behind non-obvious choices, so the codebase stays understandable long after a feature ships.'],
+                    ['title' => 'Stay Current', 'desc' => 'The Laravel and React ecosystems move fast — keeping up with them means the code shipped today doesn\'t become tomorrow\'s legacy problem.'],
+                ] as $i => $item)
+                    <div class="anime-card reveal delay-{{ $i + 1 }} p-6">
+                        <h3 class="text-[#1e1b4b] dark:text-[#e4e4e7] text-[0.95rem] font-bold mb-2">
+                            {{ $item['title'] }}
+                        </h3>
+                        <p class="text-[#6366f1] dark:text-[#a1a1aa] text-[0.85rem] leading-[1.7]">
+                            {{ $item['desc'] }}
+                        </p>
                     </div>
                 @endforeach
             </div>
         </div>
     </section>
-
-    {{-- ── SKILLS (category grid) ───────────────────────────────────────────────── --}}
-    <!--<section class="section-pad">-->
-    <!--    <div class="container">-->
-
-    <!--        <div class="text-center mb-16">-->
-    <!--            <div class="section-tag reveal flex justify-center">Tech Stack</div>-->
-    <!--            <h2-->
-    <!--                class="font-display reveal delay-1 text-[clamp(1.8rem,3.5vw,2.8rem)] font-extrabold text-[#1e1b4b] dark:text-[#e4e4e7]">-->
-    <!--                Skills &amp; Technologies-->
-    <!--            </h2>-->
-    <!--        </div>-->
-
-    <!--        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">-->
-    <!--            @foreach ($skills as $category => $items)-->
-    <!--                <div class="anime-card reveal p-6">-->
-    <!--                    <h3-->
-    <!--                        class="text-[#7c3aed] dark:text-[#8b5cf6] text-[0.8rem] font-semibold uppercase tracking-[0.1em] mb-4">-->
-    <!--                        {{ $category }}-->
-    <!--                    </h3>-->
-    <!--                    <div class="flex flex-wrap gap-2">-->
-    <!--                        @foreach ($items as $skill)-->
-    <!--                            <span class="tech-badge">{{ $skill }}</span>-->
-    <!--                        @endforeach-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--            @endforeach-->
-    <!--        </div>-->
-    <!--    </div>-->
-    <!--</section>-->
 
     {{-- ── SKILLS (radar / proficiency) ────────────────────────────────────────── --}}
     <section class="py-24 lg:py-32">

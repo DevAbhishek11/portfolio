@@ -65,7 +65,7 @@ class BlogController extends Controller
             'meta_description' => 'nullable|string|max:255',
         ]);
 
-        $data['slug']       = $data['slug'] ?: Str::slug($data['title']);
+        $data['slug']       = ($data['slug'] ?? null) ?: Str::slug($data['title']);
         $data['user_id']    = session('admin_user_id');
         $data['is_featured'] = $request->boolean('is_featured');
         $data['tags']       = $request->filled('tags')
@@ -129,7 +129,7 @@ class BlogController extends Controller
             'meta_description' => 'nullable|string|max:255',
         ]);
 
-        $data['slug']        = $data['slug'] ?: Str::slug($data['title']);
+        $data['slug']        = ($data['slug'] ?? null) ?: Str::slug($data['title']);
         $data['is_featured'] = $request->boolean('is_featured');
         $data['tags']        = $request->filled('tags')
             ? array_map('trim', explode(',', $request->tags))

@@ -1,5 +1,9 @@
 @extends('layouts.app')
 @section('content')
+    @php
+        $metaTitle = 'Contact — Hire a Laravel & Full-Stack Developer';
+        $metaDesc = 'Get in touch to discuss your project. Available for freelance and remote full-stack development work with Laravel, React, and Node.js.';
+    @endphp
     <section class="pt-32 pb-20 relative overflow-hidden">
 
         <div class="orb w-[500px] h-[500px] bg-[rgba(139,92,246,0.1)] -top-[100px] -right-[100px]"></div>
@@ -164,6 +168,10 @@
                             @if (config('portfolio.social.twitter'))
                                 <a href="{{ config('portfolio.social.twitter') }}" target="_blank"
                                     class="social-icon !w-auto !px-4 !rounded-lg !text-[0.82rem]">Twitter</a>
+                            @endif
+                            @if (portfolio_owner()?->upwork_url)
+                                <a href="{{ portfolio_owner()->upwork_url }}" target="_blank" rel="noopener"
+                                    class="social-icon !w-auto !px-4 !rounded-lg !text-[0.82rem]">Hire me on Upwork</a>
                             @endif
                         </div>
                     </div>

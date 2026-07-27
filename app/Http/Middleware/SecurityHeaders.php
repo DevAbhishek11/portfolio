@@ -12,7 +12,6 @@ class SecurityHeaders
         "'self'",
         "'unsafe-inline'",
         "'unsafe-eval'",
-        'https://cdn.tailwindcss.com',
         'https://cdnjs.cloudflare.com',
         'https://cdn.jsdelivr.net',
     ];
@@ -21,7 +20,6 @@ class SecurityHeaders
         "'self'",
         "'unsafe-inline'",
         'https://fonts.googleapis.com',
-        'https://cdn.tailwindcss.com',
         'https://cdn.jsdelivr.net',
     ];
 
@@ -36,7 +34,7 @@ class SecurityHeaders
     {
         $response = $next($request);
 
-        if (! method_exists($response, 'headers')) {
+        if (! property_exists($response, 'headers') || ! isset($response->headers)) {
             return $response;
         }
 

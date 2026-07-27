@@ -98,6 +98,19 @@
                 </div>
             @endif
 
+            @if (session('recovery_codes'))
+                <div class="p-5 rounded-2xl mb-6 bg-amber-500/10 border border-amber-500/30">
+                    <p class="text-amber-400 text-sm font-bold mb-1">Save these recovery codes now</p>
+                    <p class="text-amber-200/70 text-xs mb-4">Each code works once and lets you back in if you lose
+                        access to your authenticator or email. They won't be shown again.</p>
+                    <div class="grid grid-cols-2 gap-2 font-mono text-sm text-white">
+                        @foreach (session('recovery_codes') as $rc)
+                            <div class="bg-slate-900/60 rounded-lg px-3 py-2 text-center tracking-wider">{{ $rc }}</div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
             @if (session('setup_mode'))
                 <form method="POST" action="{{ route('admin.profile.verify-2fa-setup') }}"
                     class="mb-6 p-4 bg-slate-900/50 rounded-xl border border-slate-700">
@@ -135,6 +148,25 @@
                                 class="text-white font-bold">{{ strtoupper(str_replace('_', ' ', $user->two_factor_method)) }}</span>
                         </p>
                     </div>
+
+                    <details class="p-4 bg-slate-900/50 rounded-xl border border-slate-700 group">
+                        <summary class="text-sm font-semibold text-slate-300 cursor-pointer select-none">
+                            Regenerate recovery codes
+                        </summary>
+                        <p class="text-xs text-slate-500 mt-2 mb-3">Invalidates every unused recovery code and
+                            issues a fresh set. Use this if you've used most of them or suspect they leaked.</p>
+                        <form method="POST" action="{{ route('admin.profile.regenerate-recovery-codes') }}"
+                            class="space-y-2">
+                            @csrf
+                            <input type="password" name="password" placeholder="Confirm password" required
+                                class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded-lg px-3 py-2 outline-none focus:border-indigo-500">
+                            <button type="submit"
+                                class="w-full py-2 bg-slate-700 hover:bg-indigo-600 text-white text-sm font-bold rounded-lg transition-all">
+                                Regenerate Codes
+                            </button>
+                        </form>
+                    </details>
+
                     <form method="POST" action="{{ route('admin.profile.disable-2fa') }}" class="space-y-3">
                         @csrf
                         <input type="password" name="password" placeholder="Confirm password to disable" required

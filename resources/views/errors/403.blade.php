@@ -12,10 +12,8 @@
             <h1 class="font-display"
                 style="font-size:clamp(1.5rem,4vw,2.25rem);font-weight:800;color:var(--text-primary);margin:1rem 0;">Access
                 Forbidden</h1>
-            <p style="color:var(--text-secondary);margin-bottom:0.5rem;">アクセス禁止 · You don't have permission to view this
+            <p style="color:var(--text-secondary);margin-bottom:2rem;">アクセス禁止 · You don't have permission to view this
                 page.</p>
-            <p style="color:rgba(244,63,94,0.5);font-size:0.8rem;letter-spacing:0.1em;margin-bottom:2rem;">
-                {{ $exception?->getMessage() }}</p>
             <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
                 <a href="{{ route('home') }}" class="btn-anime">← Back to Home</a>
                 <a href="{{ route('contact') }}" class="btn-outline">Contact Support</a>

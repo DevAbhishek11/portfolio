@@ -30,5 +30,7 @@ return [
         'max_image_size_kb' => 5120,
         'allowed_image_types' => ['jpg', 'jpeg', 'png', 'webp'],
         'max_pdf_size_kb'   => 10240,
+        'max_video_size_kb' => 51200, // 50MB
+        'allowed_video_types' => ['mp4', 'webm', 'mov'],
     ],
 ];

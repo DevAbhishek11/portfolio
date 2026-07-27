@@ -7,6 +7,7 @@ use App\Http\Controllers\Frontend\ProjectController;
 use App\Http\Controllers\Frontend\ServiceController;
 use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\Frontend\ContactController;
+use App\Http\Controllers\Frontend\ChatController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\ContactQueryController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SkillController;
+use App\Http\Controllers\Admin\SettingsController;
 use Illuminate\Support\Facades\Artisan;
 
 // ─── Frontend ────────────────────────────────────────────────────────────────
@@ -44,8 +46,15 @@ Route::middleware(['track.pageview'])->group(function () {
     Route::post('/contact',       [ContactController::class, 'store'])->name('contact.store');
 });
 
+// ─── AI Chat widget ─────────────────────────────────────────────────────────
+Route::prefix('chat')->name('chat.')->group(function () {
+    Route::get('/status',  [ChatController::class, 'status'])->name('status');
+    Route::post('/message', [ChatController::class, 'message'])->name('message');
+    Route::post('/reset',  [ChatController::class, 'reset'])->name('reset');
+});
+
 // ─── Admin Auth ───────────────────────────────────────────────────────────────
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware('remember.me')->group(function () {
 
     // Guest only
     Route::middleware('guest')->group(function () {
@@ -113,6 +122,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/profile/two-factor/enable',      [ProfileController::class, 'enableTwoFactor'])->name('profile.enable-2fa');
         Route::post('/profile/two-factor/disable',     [ProfileController::class, 'disableTwoFactor'])->name('profile.disable-2fa');
         Route::post('/profile/two-factor/verify-setup', [ProfileController::class, 'verifyTwoFactorSetup'])->name('profile.verify-2fa-setup');
+        Route::post('/profile/two-factor/recovery-codes/regenerate', [ProfileController::class, 'regenerateRecoveryCodes'])->name('profile.regenerate-recovery-codes');
+
+        Route::get('/settings',  [SettingsController::class, 'index'])->name('settings.index');
+        Route::put('/settings',  [SettingsController::class, 'update'])->name('settings.update');
+        Route::put('/settings/timeline', [SettingsController::class, 'updateTimeline'])->name('settings.timeline');
 
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     });
@@ -152,49 +166,54 @@ Route::get('/robots.txt', function () {
 })->name('robots');
 
 Route::prefix('server')->group(function () {
-    $token = 'admin@1120Abhi';
-    Route::get('/storage-link/{key}', function ($key) use ($token) {
-        abort_if($key !== $token, 403);
+    $token = (string) env('MAINTENANCE_TOKEN');
+
+    $guard = function (string $key) use ($token) {
+        abort_if($token === '' || ! hash_equals($token, (string) $key), 403);
+    };
+
+    Route::get('/storage-link/{key}', function ($key) use ($guard) {
+        $guard($key);
         Artisan::call('storage:link');
         return nl2br(Artisan::output() . "\nStorage linked successfully.");
     });
 
-    Route::get('/migrate/{key}', function ($key) use ($token) {
-        abort_if($key !== $token, 403);
+    Route::get('/migrate/{key}', function ($key) use ($guard) {
+        $guard($key);
         Artisan::call('migrate', [
             '--force' => true
         ]);
         return nl2br(Artisan::output() . "\nMigration completed.");
     });
 
-    Route::get('/clear/{key}', function ($key) use ($token) {
-        abort_if($key !== $token, 403);
+    Route::get('/clear/{key}', function ($key) use ($guard) {
+        $guard($key);
         Artisan::call('optimize:clear');
         return nl2br(Artisan::output() . "\nAll caches cleared.");
     });
 
-    Route::get('/optimize/{key}', function ($key) use ($token) {
-        abort_if($key !== $token, 403);
+    Route::get('/optimize/{key}', function ($key) use ($guard) {
+        $guard($key);
         Artisan::call('config:cache');
         Artisan::call('route:cache');
         Artisan::call('view:cache');
         return nl2br("Application optimized successfully.");
     });
 
-    Route::get('/queue-restart/{key}', function ($key) use ($token) {
-        abort_if($key !== $token, 403);
+    Route::get('/queue-restart/{key}', function ($key) use ($guard) {
+        $guard($key);
         Artisan::call('queue:restart');
         return 'Queue restarted successfully.';
     });
 
-    Route::get('/down/{key}', function ($key) use ($token) {
-        abort_if($key !== $token, 403);
+    Route::get('/down/{key}', function ($key) use ($guard) {
+        $guard($key);
         Artisan::call('down');
         return 'Application is now in maintenance mode.';
     });
 
-    Route::get('/up/{key}', function ($key) use ($token) {
-        abort_if($key !== $token, 403);
+    Route::get('/up/{key}', function ($key) use ($guard) {
+        $guard($key);
         Artisan::call('up');
         return 'Application is live again.';
     });

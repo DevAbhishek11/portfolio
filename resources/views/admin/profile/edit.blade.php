@@ -32,7 +32,7 @@
                     </div>
 
                     <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
-                        @foreach ([['name', 'Full Name', 'text', true], ['title', 'Job Title', 'text', false], ['phone', 'Phone Number', 'text', false], ['location', 'Location', 'text', false], ['website', 'Website', 'url', false], ['github_url', 'GitHub URL', 'url', false], ['linkedin_url', 'LinkedIn URL', 'url', false], ['twitter_url', 'Twitter URL', 'url', false]] as [$field, $label, $type, $req])
+                        @foreach ([['name', 'Full Name', 'text', true], ['title', 'Job Title', 'text', false], ['phone', 'Phone Number', 'text', false], ['location', 'Location', 'text', false], ['website', 'Website', 'url', false], ['github_url', 'GitHub URL', 'url', false], ['linkedin_url', 'LinkedIn URL', 'url', false], ['twitter_url', 'Twitter URL', 'url', false], ['upwork_url', 'Upwork Profile URL', 'url', false]] as [$field, $label, $type, $req])
                             <div class="space-y-1.5">
                                 <label class="text-sm font-medium text-slate-300 ml-1">
                                     {{ $label }}{{ $req ? ' *' : '' }}

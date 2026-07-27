@@ -35,6 +35,31 @@ if (! function_exists('truncate_html')) {
     }
 }
 
+if (! function_exists('portfolio_owner')) {
+    /**
+     * Request-memoized lookup of the site's admin/owner user record.
+     * Called from the base layout on every page (footer, JSON-LD, chat
+     * widget) — must never throw, or a DB hiccup would take down error
+     * pages along with everything else.
+     */
+    function portfolio_owner(): ?\App\Models\User
+    {
+        static $owner = null;
+        static $resolved = false;
+
+        if (! $resolved) {
+            try {
+                $owner = \App\Models\User::where('is_admin', true)->first();
+            } catch (\Throwable $e) {
+                $owner = null;
+            }
+            $resolved = true;
+        }
+
+        return $owner;
+    }
+}
+
 if (! function_exists('gradient_avatar')) {
     /** Returns inline style for a gradient avatar based on name */
     function gradient_avatar(string $name): string

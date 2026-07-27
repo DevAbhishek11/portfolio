@@ -184,6 +184,20 @@
                             </div>
                         </div>
 
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Demo
+                                Video <span class="normal-case font-normal text-slate-600">(optional, max
+                                    {{ round(config('portfolio.upload.max_video_size_kb') / 1024) }}MB)</span></label>
+                            <input type="file" name="video" accept="video/mp4,video/webm,video/quicktime"
+                                class="block w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-white hover:file:bg-slate-600 cursor-pointer">
+                            @error('video')
+                                <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
+                            @enderror
+                            <p class="text-[10px] text-slate-600 mt-1">Plays in a floating mini-player on the
+                                public project page.</p>
+                        </div>
+
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label

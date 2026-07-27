@@ -6,7 +6,9 @@ use App\Mail\TwoFactorOtpMail;
 use App\Mail\PasswordResetMail;
 use App\Mail\ContactReplyMail;
 use App\Mail\ContactReceivedMail;
+use App\Mail\ChatLeadMail;
 use App\Models\User;
+use App\Models\ChatLead;
 use App\Models\ContactQueries as ContactQuery;
 use App\Models\ContactReplies as ContactReply;
 use Illuminate\Support\Facades\Mail;
@@ -31,5 +33,10 @@ class MailService
     public function sendContactReply(ContactQuery $query, ContactReply $reply): void
     {
         Mail::to($query->email)->send(new ContactReplyMail($query, $reply));
+    }
+
+    public function sendChatLead(User $admin, ChatLead $lead): void
+    {
+        Mail::to($admin->email)->send(new ChatLeadMail($admin, $lead));
     }
 }

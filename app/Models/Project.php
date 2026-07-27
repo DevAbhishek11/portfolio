@@ -20,6 +20,7 @@ class Project extends Model implements HasMedia
         'short_description',
         'description',
         'thumbnail',
+        'video_path',
         'github_url',
         'live_url',
         'category',

@@ -24,26 +24,29 @@ class User extends Authenticatable
         'github_url',
         'linkedin_url',
         'twitter_url',
+        'upwork_url',
         'resume_url',
         'resume',
         'two_factor_enabled',
         'two_factor_secret',
         'two_factor_method',
+        'two_factor_recovery_codes',
         'two_factor_verified_at',
         'is_admin',
         'last_login_at',
         'last_login_ip',
     ];
 
-    protected $hidden = ['password', 'remember_token', 'two_factor_secret'];
+    protected $hidden = ['password', 'remember_token', 'two_factor_secret', 'two_factor_recovery_codes'];
 
     protected $casts = [
-        'email_verified_at'      => 'datetime',
-        'two_factor_verified_at' => 'datetime',
-        'last_login_at'          => 'datetime',
-        'two_factor_enabled'     => 'boolean',
-        'is_admin'               => 'boolean',
-        'password'               => 'hashed',
+        'email_verified_at'         => 'datetime',
+        'two_factor_verified_at'    => 'datetime',
+        'last_login_at'             => 'datetime',
+        'two_factor_enabled'        => 'boolean',
+        'two_factor_recovery_codes' => 'array',
+        'is_admin'                  => 'boolean',
+        'password'                  => 'hashed',
     ];
 
     public function projects()
