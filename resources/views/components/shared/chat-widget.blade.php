@@ -3,19 +3,24 @@
         && \App\Models\Setting::bool('chat_enabled', true);
 @endphp
 @if ($chatEnabled)
-    <div id="ai-chat-widget">
-        <button id="chat-toggle" type="button" aria-label="Open AI chat"
-            class="w-14 h-14 rounded-full flex items-center justify-center text-white cursor-pointer border-0 shadow-glow-purple"
+    <div id="ai-chat-widget" style="display:flex;flex-direction:column-reverse;align-items:flex-end;gap:0.85rem;">
+        <button id="chat-toggle" type="button" aria-label="Open AI chat" aria-expanded="false"
+            class="relative w-16 h-16 rounded-full flex items-center justify-center text-white cursor-pointer border-0 shadow-glow-purple"
             style="background:linear-gradient(135deg,var(--accent-1),var(--accent-2));">
-            <svg id="chat-toggle-icon-open" width="24" height="24" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="1.8">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            <span class="absolute inset-0 rounded-full animate-ping"
+                style="background:linear-gradient(135deg,var(--accent-1),var(--accent-2));opacity:0.35;"></span>
+            <svg class="relative" width="30" height="30" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                stroke-width="1.7">
+                <rect x="4" y="8" width="16" height="12" rx="3" />
+                <path stroke-linecap="round" d="M12 8V4" />
+                <circle cx="12" cy="3" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="9" cy="13.5" r="1.3" fill="currentColor" stroke="none" />
+                <circle cx="15" cy="13.5" r="1.3" fill="currentColor" stroke="none" />
+                <path stroke-linecap="round" d="M9 17.5h6" />
+                <path stroke-linecap="round" d="M2 12h2M20 12h2" />
             </svg>
-            <svg id="chat-toggle-icon-close" width="22" height="22" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="1.8" class="hidden">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#22c55e] border-2"
+                style="border-color:var(--bg-primary);"></span>
         </button>
 
         <div id="chat-panel" class="hidden anime-card flex flex-col overflow-hidden"

@@ -22,8 +22,12 @@ const FloatingWidgets = (() => {
     const rect = footer.getBoundingClientRect();
     // Distance from the viewport bottom up to the footer's top edge, once
     // the footer has scrolled into view — 0 (i.e. just MARGIN) otherwise.
+    // Clamped so a footer whose top has scrolled far above the viewport
+    // (deep scroll, or a very tall footer) can never push the widget
+    // beyond the visible viewport entirely.
     const overlap = Math.max(0, window.innerHeight - rect.top);
-    return MARGIN + overlap;
+    const maxOverlap = Math.max(0, window.innerHeight - MARGIN * 2);
+    return MARGIN + Math.min(overlap, maxOverlap);
   }
 
   function move(el, props) {
@@ -69,12 +73,19 @@ const FloatingWidgets = (() => {
         const sideMargin = MARGIN;
         const bandStart = fromTop ? navbarSafeTop() : footerSafeBottom();
 
+        // However bandStart/offset were computed, never let a widget's
+        // resting edge fall outside the viewport — last line of defense
+        // regardless of how many widgets are stacked or how the page has
+        // scrolled.
+        const maxBand = Math.max(MARGIN, window.innerHeight - rect.height - MARGIN);
+        const band = Math.min(bandStart + offset, maxBand);
+
         const props = { left: "auto", right: "auto", top: "auto", bottom: "auto" };
         props[fromRight ? "right" : "left"] = sideMargin;
         if (fromTop) {
-          props.top = bandStart + offset;
+          props.top = band;
         } else {
-          props.bottom = bandStart + offset;
+          props.bottom = band;
         }
 
         move(w.el, props);

@@ -6,8 +6,6 @@
   if (!root) return; // chat disabled server-side (no OpenRouter key configured)
 
   const toggleBtn = document.getElementById("chat-toggle");
-  const openIcon = document.getElementById("chat-toggle-icon-open");
-  const closeIcon = document.getElementById("chat-toggle-icon-close");
   const panel = document.getElementById("chat-panel");
   const closeBtn = document.getElementById("chat-close");
   const resetBtn = document.getElementById("chat-reset");
@@ -27,8 +25,6 @@
 
   function setOpen(open) {
     panel.classList.toggle("hidden", !open);
-    openIcon.classList.toggle("hidden", open);
-    closeIcon.classList.toggle("hidden", !open);
     toggleBtn.setAttribute("aria-expanded", String(open));
     if (open) input?.focus();
     relayout();

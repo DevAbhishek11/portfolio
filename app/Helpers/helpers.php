@@ -60,6 +60,22 @@ if (! function_exists('portfolio_owner')) {
     }
 }
 
+if (! function_exists('versioned_asset')) {
+    /**
+     * asset() with a ?v=<mtime> cache-buster, so editing a plain public/
+     * JS or CSS file (not part of the Vite build) actually reaches
+     * browsers that already cached the old copy, instead of requiring
+     * visitors to hard-refresh.
+     */
+    function versioned_asset(string $path): string
+    {
+        $fullPath = public_path($path);
+        $version = is_file($fullPath) ? filemtime($fullPath) : time();
+
+        return asset($path) . '?v=' . $version;
+    }
+}
+
 if (! function_exists('gradient_avatar')) {
     /** Returns inline style for a gradient avatar based on name */
     function gradient_avatar(string $name): string

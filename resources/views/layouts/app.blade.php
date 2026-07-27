@@ -228,15 +228,15 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.0/dist/cdn.min.js" defer></script>
 
     {{-- Site JS --}}
-    <script src="{{ asset('assets/js/preloader.js') }}"></script>
-    <script src="{{ asset('assets/js/cursor.js') }}"></script>
-    <script src="{{ asset('assets/js/scroll-animations.js') }}"></script>
-    <script src="{{ asset('assets/js/mouse-interactions.js') }}"></script>
-    <script src="{{ asset('assets/js/particle-system.js') }}"></script>
-    <script src="{{ asset('assets/js/floating-widgets.js') }}"></script>
-    <script src="{{ asset('assets/js/chat-widget.js') }}"></script>
-    <script src="{{ asset('assets/js/video-widget.js') }}"></script>
-    <script src="{{ asset('assets/js/app.js') }}"></script>
+    <script src="{{ versioned_asset('assets/js/preloader.js') }}"></script>
+    <script src="{{ versioned_asset('assets/js/cursor.js') }}"></script>
+    <script src="{{ versioned_asset('assets/js/scroll-animations.js') }}"></script>
+    <script src="{{ versioned_asset('assets/js/mouse-interactions.js') }}"></script>
+    <script src="{{ versioned_asset('assets/js/particle-system.js') }}"></script>
+    <script src="{{ versioned_asset('assets/js/floating-widgets.js') }}"></script>
+    <script src="{{ versioned_asset('assets/js/chat-widget.js') }}"></script>
+    <script src="{{ versioned_asset('assets/js/video-widget.js') }}"></script>
+    <script src="{{ versioned_asset('assets/js/app.js') }}"></script>
 
     <script>
         // ── Preloader ────────────────────────────────────────────────────────────────
