@@ -66,7 +66,7 @@
                         {{ substr($blog->user->name ?? 'A', 0, 1) }}
                     </div>
                     <span
-                        style="color:var(--text-primary);font-weight:500;font-size:0.9rem;">{{ $blog->user->name ?? 'Admin' }}</span>
+                        style="color:var(--text-primary);font-weight:500;font-size:0.9rem;">{{ $blog->user->name ?? portfolio_owner()?->name ?? config('portfolio.site_name') }}</span>
                 </div>
                 <span
                     style="color:var(--text-secondary);font-size:0.85rem;">{{ $blog->published_at?->format('M d, Y') }}</span>

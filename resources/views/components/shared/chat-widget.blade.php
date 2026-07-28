@@ -45,10 +45,22 @@
                 </div>
             </div>
 
-            <div id="chat-messages" class="flex-1 overflow-y-auto" style="padding:0.75rem;display:flex;flex-direction:column;gap:0.6rem;">
-                <div class="chat-msg chat-msg-assistant">
-                    Hi! Ask me about {{ portfolio_owner()?->name ?? config('portfolio.site_name') }}'s projects, skills,
-                    or experience — or let me know if you'd like to get in touch.
+            <div id="chat-messages" class="flex-1 overflow-y-auto" style="padding:0.75rem;display:flex;flex-direction:column;gap:0.7rem;">
+                <div class="chat-row chat-row-assistant">
+                    <div class="chat-avatar">
+                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <rect x="4" y="8" width="16" height="12" rx="3" />
+                            <path stroke-linecap="round" d="M12 8V4" />
+                            <circle cx="12" cy="3" r="1.1" fill="currentColor" stroke="none" />
+                            <circle cx="9" cy="13.5" r="1.3" fill="currentColor" stroke="none" />
+                            <circle cx="15" cy="13.5" r="1.3" fill="currentColor" stroke="none" />
+                            <path stroke-linecap="round" d="M9 17.5h6" />
+                        </svg>
+                    </div>
+                    <div class="chat-msg chat-msg-assistant">
+                        Hi! Ask me about {{ portfolio_owner()?->name ?? config('portfolio.site_name') }}'s projects, skills,
+                        or experience — or let me know if you'd like to get in touch.
+                    </div>
                 </div>
             </div>
 
@@ -61,10 +73,36 @@
         </div>
     </div>
 
-    @push('styles')
-        <style>
+    <style>
+            .chat-row {
+                display: flex;
+                align-items: flex-end;
+                gap: 0.45rem;
+                max-width: 92%;
+            }
+
+            .chat-row-user {
+                align-self: flex-end;
+                flex-direction: row-reverse;
+            }
+
+            .chat-row-assistant {
+                align-self: flex-start;
+            }
+
+            .chat-avatar {
+                flex-shrink: 0;
+                width: 24px;
+                height: 24px;
+                border-radius: 9999px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            }
+
             .chat-msg {
-                max-width: 85%;
                 padding: 0.55rem 0.8rem;
                 border-radius: 0.9rem;
                 font-size: 0.83rem;
@@ -73,18 +111,31 @@
             }
 
             .chat-msg-user {
-                align-self: flex-end;
                 background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
                 color: #fff;
+                font-weight: 500;
                 border-bottom-right-radius: 0.25rem;
             }
 
             .chat-msg-assistant {
-                align-self: flex-start;
                 background: var(--bg-tertiary);
                 border: 1px solid var(--border-color);
                 color: var(--text-primary);
                 border-bottom-left-radius: 0.25rem;
+            }
+
+            .chat-msg-assistant ul {
+                list-style: disc;
+                margin: 0.35rem 0 0;
+                padding-left: 1.1rem;
+            }
+
+            .chat-msg-assistant li {
+                margin-bottom: 0.2rem;
+            }
+
+            .chat-msg-assistant li::marker {
+                color: var(--accent-1);
             }
 
             .chat-msg-typing {
@@ -92,7 +143,7 @@
                 color: var(--text-secondary);
                 font-size: 0.8rem;
                 font-style: italic;
+                padding-left: 1.85rem;
             }
         </style>
-    @endpush
 @endif

@@ -13,7 +13,7 @@ class AdminUserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'dev.abhishek.ap11@gmail.com'],
             [
-                'name'       => 'Admin',
+                'name'       => 'Abhishek Prajapati',
                 'password'   => Hash::make('Admin@123456'),
                 'is_admin'   => true,
                 'title'      => 'Full Stack Developer',

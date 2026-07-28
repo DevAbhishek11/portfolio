@@ -65,7 +65,7 @@ class OpenRouterService
                 'model' => $model,
                 'messages' => $messages,
                 'temperature' => 0.6,
-                'max_tokens' => 500,
+                'max_tokens' => 300,
             ]);
         } catch (\Throwable $e) {
             Log::warning('OpenRouter request threw an exception', ['model' => $model, 'error' => $e->getMessage()]);

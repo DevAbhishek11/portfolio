@@ -33,13 +33,62 @@
   toggleBtn.addEventListener("click", () => setOpen(panel.classList.contains("hidden")));
   closeBtn.addEventListener("click", () => setOpen(false));
 
+  const BOT_ICON_SVG =
+    '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">' +
+    '<rect x="4" y="8" width="16" height="12" rx="3"/><path stroke-linecap="round" d="M12 8V4"/>' +
+    '<circle cx="12" cy="3" r="1.1" fill="currentColor" stroke="none"/>' +
+    '<circle cx="9" cy="13.5" r="1.3" fill="currentColor" stroke="none"/>' +
+    '<circle cx="15" cy="13.5" r="1.3" fill="currentColor" stroke="none"/>' +
+    '<path stroke-linecap="round" d="M9 17.5h6"/></svg>';
+
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // Minimal, safe "- bullet" / line-break formatting for AI replies — text
+  // is HTML-escaped first, so only the ul/li/br tags added here are real markup.
+  function formatAssistantText(text) {
+    const lines = escapeHtml(text).split("\n");
+    let html = "";
+    let inList = false;
+    lines.forEach((line) => {
+      const bullet = line.match(/^\s*[-*]\s+(.*)$/);
+      if (bullet) {
+        if (!inList) { html += "<ul>"; inList = true; }
+        html += "<li>" + bullet[1] + "</li>";
+      } else {
+        if (inList) { html += "</ul>"; inList = false; }
+        html += line + "<br>";
+      }
+    });
+    if (inList) html += "</ul>";
+    return html;
+  }
+
   function addMessage(role, text) {
-    const el = document.createElement("div");
-    el.className = "chat-msg " + (role === "user" ? "chat-msg-user" : "chat-msg-assistant");
-    el.textContent = text;
-    messages.appendChild(el);
+    const row = document.createElement("div");
+    const bubble = document.createElement("div");
+
+    if (role === "user") {
+      row.className = "chat-row chat-row-user";
+      bubble.className = "chat-msg chat-msg-user";
+      bubble.textContent = text;
+    } else {
+      row.className = "chat-row chat-row-assistant";
+      const avatar = document.createElement("div");
+      avatar.className = "chat-avatar";
+      avatar.innerHTML = BOT_ICON_SVG;
+      row.appendChild(avatar);
+      bubble.className = "chat-msg chat-msg-assistant";
+      bubble.innerHTML = formatAssistantText(text);
+    }
+
+    row.appendChild(bubble);
+    messages.appendChild(row);
     messages.scrollTop = messages.scrollHeight;
-    return el;
+    return row;
   }
 
   function addTypingIndicator() {
